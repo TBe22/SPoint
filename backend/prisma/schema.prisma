@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  CLIENT
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(CLIENT)
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clientProfile ClientProfile?
+  staffProfile  StaffProfile?
+  appointments  Appointment[]
+  sales         Sale[]
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+}
+
+model ClientProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone     String?
+  notes     String?
+  loyaltyPoints Int  @default(0)
+}
+
+model StaffProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio       String?
+  availability Availability[]
+  services  Service[] // Services this staff can perform
+  appointments Appointment[] // Appointments assigned to this staff
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal
+  duration    Int      // in minutes
+  isPublic    Boolean  @default(true)
+  name_en     String?
+  name_pt     String?
+  name_uk     String?
+  description_en String?
+  description_pt String?
+  description_uk String?
+  categoryId  String?
+  category    ServiceCategory? @relation(fields: [categoryId], references: [id])
+  staff       StaffProfile[]
+  appointments Appointment[]
+  salesItems   SalesItem[]
+}
+
+model ServiceCategory {
+  id       String    @id @default(uuid())
+  name     String
+  services Service[]
+}
+
+model Availability {
+  id        String   @id @default(uuid())
+  staffId   String
+  staff     StaffProfile @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  dayOfWeek Int      // 0-6 (Sun-Sat)
+  startTime String   // "09:00"
+  endTime   String   // "17:00"
+}
+
+model Appointment {
+  id        String   @id @default(uuid())
+  clientId  String
+  client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  staffId   String?
+  staff     StaffProfile? @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  startTime DateTime
+  endTime   DateTime
+  status    String   // PENDING, CONFIRMED, COMPLETED, CANCELLED, NO_SHOW
+  notes     String?
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal
+  stock       Int      @default(0)
+  sku         String?  @unique
+  category    String?
+  isPublic    Boolean  @default(true)
+  name_en     String?
+  name_pt     String?
+  name_uk     String?
+  description_en String?
+  description_pt String?
+  description_uk String?
+  salesItems  SalesItem[]
+}
+
+model Sale {
+  id        String   @id @default(uuid())
+  clientId  String?
+  client    User?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  total     Decimal
+  createdAt DateTime @default(now())
+  items     SalesItem[]
+}
+
+model SalesItem {
+  id        String   @id @default(uuid())
+  saleId    String
+  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  serviceId String?
+  service   Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  quantity  Int
+  price     Decimal
+}
+model GlobalSetting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  senderId  String
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver  User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model News {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  imageUrl  String?
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,37 @@
+# Service Business Application - Task List
+
+- [/] Project Initialization & Planning
+    - [x] Create project directory
+    - [x] Create implementation plan
+    - [x] Initialize git repository
+- [x] Backend Core Setup (NestJS)
+    - [x] Initialize NestJS project
+    - [x] Configure PostgreSQL connection (TypeORM/Prisma)
+    - [x] Setup Docker/Docker-compose for DB
+    - [x] Implement Authentication (JWT, Guards)
+- [/] Database Schema Design
+    - [ ] Users & Roles (Admin, Staff, Client)
+    - [ ] Services & Categories
+    - [ ] Appointments & Availability
+    - [ ] Products & Inventory
+    - [ ] Sales & Invoices
+- [x] Frontend Core Setup (React + Vite)
+    - [x] Initialize React using Vite
+    - [x] Setup TailwindCSS & UI Component Library
+    - [x] Setup Routing (React Router)
+    - [x] Setup State Management (Zustand/Redux/Context)
+    - [x] Setup API Client (Axios/TanStack Query)
+- [/] Core Modules Implementation
+    - [x] CRM Module (Clients)
+    - [x] Service Management Module
+    - [x] Staff & Availability Module
+    - [x] Scheduling/Calendar Module
+- [/] Sales & Shop Modules
+    - [x] Product & Inventory Management
+    - [x] Point of Sale (POS) / Sales History
+- [x] Analytics & KPI Dashboard
+    - [x] Dashboard UI
+    - [x] Backend Aggregation Logic
+- [x] Final Polish & Deployment Preparation
+    - [x] Deployment Instructions
+    - [x] Final Testing

@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: serviceapp-backend
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install && npm run build && npx prisma generate
+    startCommand: cd backend && npx prisma migrate deploy && npm run start:prod
+    envVars:
+      - key: DATABASE_URL
+        value: file:./data/dev.db
+      - key: NODE_VERSION
+        value: 18
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/backend/data
+      sizeGB: 1
